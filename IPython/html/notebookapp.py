@@ -611,11 +611,10 @@ class NotebookApp(BaseIPythonApplication):
         help='The cluster manager class to use.'
     )
 
-    kernel_spec_manager = Instance(KernelSpecManager)
-
-    def _kernel_spec_manager_default(self):
-        return KernelSpecManager(ipython_dir=self.ipython_dir)
-
+    kernel_spec_manager_class = DottedObjectName('IPython.kernel.kernelspec.KernelSpecManager', config=True)
+    kls = import_item(kernel_spec_manager_class)
+    kernel_spec_manager = kls()
+    
     trust_xheaders = Bool(False, config=True,
         help=("Whether to trust or not X-Scheme/X-Forwarded-Proto and X-Real-Ip/X-Forwarded-For headers"
               "sent by the upstream reverse proxy. Necessary if the proxy handles SSL")
